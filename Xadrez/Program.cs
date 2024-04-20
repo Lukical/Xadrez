@@ -12,6 +12,7 @@ namespace Xadrez
                 BoardGame board = new BoardGame(8, 8);
                 board.PutPiece(new Tower(board, Color.Black), new Position(0, 0));
                 board.PutPiece(new King(board, Color.Black), new Position(0, 2));
+                board.PutPiece(new Tower(board, Color.White), new Position(3, 5));
                 Screen.PrintBoard(board);
                 Console.WriteLine();
             }
