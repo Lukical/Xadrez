@@ -3,18 +3,18 @@ namespace Xadrez
 {
     class Screen
     {
-        public static void printBoard(BoardGame board)
+        public static void PrintBoard(BoardGame board)
         {
             for (int i = 0; i < board.Lines;  i++)
             {
                 for(int j = 0; j < board.Columns; j++)
                 {
-                    if(board.piece(i, j) == null)
+                    if(board.ReturnPiece(i, j) == null)
                     {
                         Console.Write("- ");
                         continue;
                     }
-                    Console.Write($"{board.piece(i, j)} ");
+                    Console.Write($"{board.ReturnPiece(i, j)} ");
                 }
                 Console.WriteLine();
             }
