@@ -26,7 +26,7 @@ namespace Xadrez.Xadrez
         private void PutPieces()
         {
             Board.PutPiece(new Tower(Board, Color.White), new ChessPosition('c', 1).ToPosition());
-            Board.PutPiece(new Tower(Board, Color.White), new ChessPosition('c', 2).ToPosition());
+            Board.PutPiece(new King(Board, Color.White), new ChessPosition('c', 2).ToPosition());
             Board.PutPiece(new Tower(Board, Color.Black), new ChessPosition('d', 7).ToPosition());
         }
     }
