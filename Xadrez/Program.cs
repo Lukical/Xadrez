@@ -9,18 +9,23 @@ namespace Xadrez
         {
             try
             {
-                BoardGame board = new BoardGame(8, 8);
-                board.PutPiece(new Tower(board, Color.Black), new Position(0, 0));
-                board.PutPiece(new King(board, Color.Black), new Position(0, 2));
-                board.PutPiece(new Tower(board, Color.White), new Position(3, 5));
-                Screen.PrintBoard(board);
-                Console.WriteLine();
+                ChessPlay chessPlay = new ChessPlay();
+                while (!chessPlay.isOver)
+                {
+                    Console.Clear();
+                    Screen.PrintBoard(chessPlay.Board);
+                    Console.WriteLine();
+                    Console.Write("Origin: ");
+                    Position origin = Screen.ReadPositionChess().ToPosition();
+                    Console.Write("Destiny: ");
+                    Position destiny = Screen.ReadPositionChess().ToPosition();
+                    chessPlay.Movement(origin, destiny);
+                }             
             }
             catch (BoardException e)
             {
                 Console.WriteLine(e.Message);
-            }
-            
+            }       
         }
     }
 }

@@ -29,6 +29,17 @@
             Pieces[pos.Line, pos.Column] = p;
             p.Position = pos;
         }
+        public Piece RemovePiece(Position pos)
+        {
+            if (ReturnPiece(pos) == null)
+            {
+                return null;
+            }
+            Piece aux = ReturnPiece(pos);
+            aux.Position = null;
+            Pieces[pos.Line, pos.Column] = null;
+            return aux;
+        }
         public bool SearchPiece(Position pos)
         {
             ValidatePosition(pos);
