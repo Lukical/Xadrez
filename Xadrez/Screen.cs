@@ -4,6 +4,37 @@ namespace Xadrez
 {
     class Screen
     {
+        public static void PrintChessPlay(ChessPlay chessPlay)
+        {
+            Screen.PrintBoard(chessPlay.Board);
+            Console.WriteLine();
+            PrintOutPieces(chessPlay);
+            Console.WriteLine();
+            Console.WriteLine($"Turn: {chessPlay.Turn}");
+            Console.WriteLine($"Waiting {chessPlay.ActualPlayer} player moviment");
+        }
+        public static void PrintOutPieces(ChessPlay chessPlay)
+        {
+            Console.WriteLine("Pieces out:");
+            Console.Write("White: ");
+            PrintGroup(chessPlay.ListOutPieces(Color.White));
+            Console.WriteLine();
+            Console.Write("Black: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            PrintGroup(chessPlay.ListOutPieces(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+        }
+        public static void PrintGroup(HashSet<Piece> group)
+        {
+            Console.Write("[");
+            foreach (Piece p in group)
+            {
+                Console.Write(p + " ");
+            }
+            Console.Write("]");
+        }
         public static void PrintBoard(BoardGame board)
         {
             for (int i = 0; i < board.Lines;  i++)
@@ -68,6 +99,6 @@ namespace Xadrez
             Console.Write(piece);
             Console.ForegroundColor = aux;
             Console.Write(" ");
-        }
+        }       
     }
 }
