@@ -33,7 +33,9 @@ namespace Xadrez
                         Console.WriteLine(e.Message);
                         Console.ReadLine();
                     }
-                }             
+                }
+                Console.Clear();
+                Screen.PrintChessPlay(chessPlay);
             }
             catch (BoardException e)
             {

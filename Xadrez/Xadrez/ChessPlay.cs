@@ -89,7 +89,7 @@ namespace Xadrez.Xadrez
             }
             return null;
         }
-        public bool IsCheckmate(Color color)
+        public bool IsInCheck(Color color)
         {
             Piece k = IsKing(color);
             if (k == null) throw new BoardException("King not found!");
@@ -103,6 +103,36 @@ namespace Xadrez.Xadrez
             }
             return false;
         }
+        public bool Checkmate(Color color)
+        {
+            if (!IsInCheck(color)) 
+            {
+                return false;
+            }
+            foreach(Piece p in ListReamainingPieces(color))
+            {
+                bool[,] mat = p.PossibleMoviments();
+                for (int i = 0; i < Board.Lines; i++)
+                {
+                    for (int j = 0; j < Board.Columns; j++)
+                    {
+                        if (mat[i, j])
+                        {
+                            Position origin = p.Position;
+                            Position destiny = new Position(i, j);
+                            Piece e = Movement(origin, destiny);
+                            bool check = IsInCheck(color);
+                            BackMovement(origin, destiny, e);
+                            if (!check)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }  
+            }
+            return true;
+        }
         public void PutNewPieces(char column, int line, Piece piece) 
         {
             Board.PutPiece(piece, new ChessPosition(column, line).ToPosition());
@@ -112,25 +142,20 @@ namespace Xadrez.Xadrez
         {
             PutNewPieces('c', 1, new Tower(Board, Color.White));
             PutNewPieces('d', 1, new King(Board, Color.White));
-            PutNewPieces('e', 1, new Tower(Board, Color.White));
-            PutNewPieces('c', 2, new Tower(Board, Color.White));
-            PutNewPieces('d', 2, new Tower(Board, Color.White));
-            PutNewPieces('e', 2, new Tower(Board, Color.White));
+            PutNewPieces('h', 7, new Tower(Board, Color.White));
 
-            PutNewPieces('d', 7, new Tower(Board, Color.Black));
-            PutNewPieces('c', 7, new Tower(Board, Color.Black));
-            PutNewPieces('e', 7, new Tower(Board, Color.Black));
-            PutNewPieces('d', 8, new King(Board, Color.Black));
+            PutNewPieces('b', 8, new Tower(Board, Color.Black));
+            PutNewPieces('a', 8, new King(Board, Color.Black));
         }
         public void RealizePlay(Position origin, Position destiny)
         {
             Piece e = Movement(origin, destiny);
-            if (IsCheckmate(ActualPlayer))
+            if (IsInCheck(ActualPlayer))
             {
                 BackMovement(origin, destiny, e);
                 throw new BoardException("You are in check!");
             }
-            if(IsCheckmate(Enemy(ActualPlayer)))
+            if(IsInCheck(Enemy(ActualPlayer)))
             {
                 Check = true;
             }
@@ -138,8 +163,14 @@ namespace Xadrez.Xadrez
             {
                 Check = false;
             }
-            Turn++;
-            changePlayer();
+            if (Checkmate(Enemy(ActualPlayer))){
+                IsOver = true;
+            }
+           else
+            {
+                Turn++;
+                changePlayer();
+            }
         }
         public void ValidOriginPosition(Position pos)
         {

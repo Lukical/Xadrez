@@ -19,7 +19,6 @@ namespace Xadrez.Xadrez
         public override bool[,] PossibleMoviments()
         {
             bool[,] mat = new bool[Board.Lines, Board.Columns];
-            Position pos = new Position(0, 0);
             int[] directions = { -1, 1, 0, 0 };
 
             for (int i = 0; i < 4; i++)
@@ -30,8 +29,9 @@ namespace Xadrez.Xadrez
                 {
                     line += directions[i];
                     column += directions[(i + 2) % 4];
-                    pos.defValues(line, column);
+                    Position pos = new Position(line, column);
                     if (!Board.ValidPosition(pos) || !CanMove(pos)) break;
+                    pos.defValues(line, column);
                     mat[pos.Line, pos.Column] = true;
                     if (Board.ReturnPiece(pos) != null && Board.ReturnPiece(pos).Color != Color) break; 
                 }
