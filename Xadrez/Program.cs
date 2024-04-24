@@ -10,7 +10,7 @@ namespace Xadrez
             try
             {
                 ChessPlay chessPlay = new ChessPlay();
-                while (!chessPlay.isOver)
+                while (!chessPlay.IsOver)
                 {
                     try { 
                         Console.Clear();

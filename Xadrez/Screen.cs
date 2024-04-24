@@ -12,6 +12,10 @@ namespace Xadrez
             Console.WriteLine();
             Console.WriteLine($"Turn: {chessPlay.Turn}");
             Console.WriteLine($"Waiting {chessPlay.ActualPlayer} player moviment");
+            if (chessPlay.Check)
+            {
+                Console.WriteLine("Check!");
+            }
         }
         public static void PrintOutPieces(ChessPlay chessPlay)
         {

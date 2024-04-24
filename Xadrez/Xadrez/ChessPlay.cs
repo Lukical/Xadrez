@@ -6,21 +6,23 @@ namespace Xadrez.Xadrez
         public BoardGame Board { get; private set; }
         public int Turn { get; private set; }
         public Color ActualPlayer { get; private set; }
-        public bool isOver {  get; private set; }
+        public bool IsOver {  get; private set; }
         private HashSet<Piece> Pieces;
         private HashSet<Piece> OutPieces;
+        public bool Check { get; private set; }
 
         public ChessPlay()
         {
             Board = new BoardGame(8, 8);
             Turn = 1;
             ActualPlayer = Color.White;
-            isOver = false;
+            IsOver = false;
+            Check = false;
             Pieces = new HashSet<Piece>();
             OutPieces = new HashSet<Piece>();
             PutPieces();
         }
-        public void Movement(Position origin, Position destiny)
+        public Piece Movement(Position origin, Position destiny)
         {
             Piece p = Board.RemovePiece(origin);
             p.IncrementMovements();
@@ -30,6 +32,18 @@ namespace Xadrez.Xadrez
             {
                 OutPieces.Add(e);
             }
+            return e;
+        }
+        public void BackMovement(Position origin, Position destiny, Piece piece)
+        {
+            Piece p = Board.RemovePiece(destiny);
+            p.DecrementMovements();
+            if(piece != null)
+            {
+                Board.PutPiece(piece, destiny);
+                OutPieces.Remove(piece);
+            }
+            Board.PutPiece(p, origin);
         }
         public HashSet<Piece> ListOutPieces(Color color)
         {
@@ -56,6 +70,39 @@ namespace Xadrez.Xadrez
             aux.ExceptWith(ListOutPieces(color));
             return aux;
         }
+        private Color Enemy(Color color)
+        {
+            if(color == Color.White)
+            {
+                return Color.Black;
+            }
+            return Color.White;
+        }
+        private Piece IsKing(Color color)
+        {
+            foreach(Piece p in ListReamainingPieces(color))
+            {
+                if(p is King)
+                {
+                    return p;
+                }
+            }
+            return null;
+        }
+        public bool IsCheckmate(Color color)
+        {
+            Piece k = IsKing(color);
+            if (k == null) throw new BoardException("King not found!");
+            foreach(Piece p in ListReamainingPieces(Enemy(color)))
+            {
+                bool[,] mat = p.PossibleMoviments();
+                if (mat[k.Position.Line, k.Position.Column])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public void PutNewPieces(char column, int line, Piece piece) 
         {
             Board.PutPiece(piece, new ChessPosition(column, line).ToPosition());
@@ -77,7 +124,20 @@ namespace Xadrez.Xadrez
         }
         public void RealizePlay(Position origin, Position destiny)
         {
-            Movement(origin, destiny);
+            Piece e = Movement(origin, destiny);
+            if (IsCheckmate(ActualPlayer))
+            {
+                BackMovement(origin, destiny, e);
+                throw new BoardException("You are in check!");
+            }
+            if(IsCheckmate(Enemy(ActualPlayer)))
+            {
+                Check = true;
+            }
+            else
+            {
+                Check = false;
+            }
             Turn++;
             changePlayer();
         }
