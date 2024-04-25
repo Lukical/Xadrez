@@ -140,12 +140,42 @@ namespace Xadrez.Xadrez
         }
         private void PutPieces()
         {
-            PutNewPieces('c', 1, new Tower(Board, Color.White));
-            PutNewPieces('d', 1, new King(Board, Color.White));
-            PutNewPieces('h', 7, new Tower(Board, Color.White));
+            PutNewPieces('a', 1, new Tower(Board, Color.White));
+            PutNewPieces('b', 1, new Horse(Board, Color.White));
+            PutNewPieces('c', 1, new Bishop(Board, Color.White));
+            PutNewPieces('d', 1, new Queen(Board, Color.White));
+            PutNewPieces('e', 1, new King(Board, Color.White));
+            PutNewPieces('f', 1, new Bishop(Board, Color.White));
+            PutNewPieces('g', 1, new Horse(Board, Color.White));
+            PutNewPieces('h', 1, new Tower(Board, Color.White));
 
-            PutNewPieces('b', 8, new Tower(Board, Color.Black));
-            PutNewPieces('a', 8, new King(Board, Color.Black));
+            PutNewPieces('a', 2, new Pawn(Board, Color.White));
+            PutNewPieces('b', 2, new Pawn(Board, Color.White));
+            PutNewPieces('c', 2, new Pawn(Board, Color.White));
+            PutNewPieces('d', 2, new Pawn(Board, Color.White));
+            PutNewPieces('e', 2, new Pawn(Board, Color.White));
+            PutNewPieces('f', 2, new Pawn(Board, Color.White));
+            PutNewPieces('g', 2, new Pawn(Board, Color.White));
+            PutNewPieces('h', 2, new Pawn(Board, Color.White));
+
+            PutNewPieces('a', 8, new Tower(Board, Color.Black));
+            PutNewPieces('b', 8, new Horse(Board, Color.Black));
+            PutNewPieces('c', 8, new Bishop(Board, Color.Black));
+            PutNewPieces('d', 8, new Queen(Board, Color.Black));
+            PutNewPieces('e', 8, new King(Board, Color.Black));
+            PutNewPieces('f', 8, new Bishop(Board, Color.Black));
+            PutNewPieces('g', 8, new Horse(Board, Color.Black));
+            PutNewPieces('h', 8, new Tower(Board, Color.Black));
+
+            PutNewPieces('a', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('b', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('c', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('d', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('e', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('f', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('g', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('h', 7, new Pawn(Board, Color.Black));
+
         }
         public void RealizePlay(Position origin, Position destiny)
         {
@@ -189,7 +219,7 @@ namespace Xadrez.Xadrez
         }
         public void ValidDestinyPosition(Position origin, Position destiny)
         {
-            if (!Board.ReturnPiece(origin).CanMoveto(destiny))
+            if (!Board.ReturnPiece(origin).PossibleMoviment(destiny))
             {
                 throw new BoardException("Destiny position invalid!");
             }
