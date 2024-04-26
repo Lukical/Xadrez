@@ -32,6 +32,24 @@ namespace Xadrez.Xadrez
             {
                 OutPieces.Add(e);
             }
+            //Small Castling
+            if(p is King && destiny.Column == origin.Column + 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column + 3);
+                Position destinyT = new Position(origin.Line, origin.Column + 1);
+                Piece T = Board.RemovePiece(originT);
+                T.IncrementMovements();
+                Board.PutPiece(T, destinyT);
+            }
+            //Big Castling
+            if (p is King && destiny.Column == origin.Column - 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column - 4);
+                Position destinyT = new Position(origin.Line, origin.Column - 1);
+                Piece T = Board.RemovePiece(originT);
+                T.IncrementMovements();
+                Board.PutPiece(T, destinyT);
+            }
             return e;
         }
         public void BackMovement(Position origin, Position destiny, Piece piece)
@@ -44,6 +62,25 @@ namespace Xadrez.Xadrez
                 OutPieces.Remove(piece);
             }
             Board.PutPiece(p, origin);
+
+            //Small Castling
+            if (p is King && destiny.Column == origin.Column + 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column + 3);
+                Position destinyT = new Position(origin.Line, origin.Column + 1);
+                Piece T = Board.RemovePiece(destinyT);
+                T.DecrementMovements();
+                Board.PutPiece(T, originT);
+            }
+            //Big Castling
+            if (p is King && destiny.Column == origin.Column - 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column - 4);
+                Position destinyT = new Position(origin.Line, origin.Column - 1);
+                Piece T = Board.RemovePiece(destinyT);
+                T.DecrementMovements();
+                Board.PutPiece(T, originT);
+            }
         }
         public HashSet<Piece> ListOutPieces(Color color)
         {
@@ -144,7 +181,7 @@ namespace Xadrez.Xadrez
             PutNewPieces('b', 1, new Horse(Board, Color.White));
             PutNewPieces('c', 1, new Bishop(Board, Color.White));
             PutNewPieces('d', 1, new Queen(Board, Color.White));
-            PutNewPieces('e', 1, new King(Board, Color.White));
+            PutNewPieces('e', 1, new King(Board, Color.White, this));
             PutNewPieces('f', 1, new Bishop(Board, Color.White));
             PutNewPieces('g', 1, new Horse(Board, Color.White));
             PutNewPieces('h', 1, new Tower(Board, Color.White));
@@ -162,7 +199,7 @@ namespace Xadrez.Xadrez
             PutNewPieces('b', 8, new Horse(Board, Color.Black));
             PutNewPieces('c', 8, new Bishop(Board, Color.Black));
             PutNewPieces('d', 8, new Queen(Board, Color.Black));
-            PutNewPieces('e', 8, new King(Board, Color.Black));
+            PutNewPieces('e', 8, new King(Board, Color.Black, this));
             PutNewPieces('f', 8, new Bishop(Board, Color.Black));
             PutNewPieces('g', 8, new Horse(Board, Color.Black));
             PutNewPieces('h', 8, new Tower(Board, Color.Black));
