@@ -35,7 +35,9 @@ namespace Xadrez.Xadrez
                     else
                     {
                         break;
-                    } 
+                    }
+                    if (Board.ReturnPiece(pos) != null && Board.ReturnPiece(pos).Color != Color)
+                        break;
                 }
             }
             return mat;

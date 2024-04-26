@@ -260,7 +260,22 @@ namespace Xadrez.Xadrez
                 BackMovement(origin, destiny, e);
                 throw new BoardException("You are in check!");
             }
-            if(IsInCheck(Enemy(ActualPlayer)))
+            Piece p = Board.ReturnPiece(destiny);
+
+            //Promotion
+            if(p is Pawn)
+            {
+                if((p.Color == Color.White && destiny.Line == 0) || (p.Color == Color.Black && destiny.Line == 7))
+                {
+                    p = Board.RemovePiece(destiny);
+                    Pieces.Remove(p);
+                    Piece queen = new Queen(Board, p.Color);
+                    Board.PutPiece(queen, destiny);
+                    Pieces.Add(queen);
+                }
+            }
+
+            if (IsInCheck(Enemy(ActualPlayer)))
             {
                 Check = true;
             }
@@ -278,7 +293,6 @@ namespace Xadrez.Xadrez
             }
 
             //passant
-            Piece p = Board.ReturnPiece(destiny);
             if(p is Pawn && (destiny.Line == origin.Line - 2 || destiny.Line == origin.Line + 2))
             {
                 IsInPassant = p;
