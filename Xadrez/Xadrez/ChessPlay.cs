@@ -10,6 +10,7 @@ namespace Xadrez.Xadrez
         private HashSet<Piece> Pieces;
         private HashSet<Piece> OutPieces;
         public bool Check { get; private set; }
+        public Piece IsInPassant { get; private set; }
 
         public ChessPlay()
         {
@@ -18,6 +19,7 @@ namespace Xadrez.Xadrez
             ActualPlayer = Color.White;
             IsOver = false;
             Check = false;
+            IsInPassant = null;
             Pieces = new HashSet<Piece>();
             OutPieces = new HashSet<Piece>();
             PutPieces();
@@ -42,13 +44,31 @@ namespace Xadrez.Xadrez
                 Board.PutPiece(T, destinyT);
             }
             //Big Castling
-            if (p is King && destiny.Column == origin.Column - 2)
+            else if (p is King && destiny.Column == origin.Column - 2)
             {
                 Position originT = new Position(origin.Line, origin.Column - 4);
                 Position destinyT = new Position(origin.Line, origin.Column - 1);
                 Piece T = Board.RemovePiece(originT);
                 T.IncrementMovements();
                 Board.PutPiece(T, destinyT);
+            }
+            //Passant
+            else if(p is Pawn)
+            {
+                if(origin.Column != destiny.Column && e == null) 
+                {
+                    Position posP;
+                    if(p.Color == Color.White)
+                    {
+                        posP = new Position(destiny.Line + 1, destiny.Column);
+                    }
+                    else
+                    {
+                        posP = new Position(destiny.Line - 1, destiny.Column);
+                    }
+                    e = Board.RemovePiece(posP);
+                    OutPieces.Add(e);
+                }
             }
             return e;
         }
@@ -73,13 +93,31 @@ namespace Xadrez.Xadrez
                 Board.PutPiece(T, originT);
             }
             //Big Castling
-            if (p is King && destiny.Column == origin.Column - 2)
+            else if (p is King && destiny.Column == origin.Column - 2)
             {
                 Position originT = new Position(origin.Line, origin.Column - 4);
                 Position destinyT = new Position(origin.Line, origin.Column - 1);
                 Piece T = Board.RemovePiece(destinyT);
                 T.DecrementMovements();
                 Board.PutPiece(T, originT);
+            }
+            //Passant
+            else if (p is Pawn)
+            {
+                if (origin.Column != destiny.Column && piece == null)
+                {
+                    Piece pawn = Board.RemovePiece(destiny);
+                    Position posP;
+                    if(p.Color == Color.White)
+                    {
+                        posP = new Position(3, destiny.Column);
+                    }
+                    else
+                    {
+                        posP = new Position(4, destiny.Column);
+                    }
+                    Board.PutPiece(pawn, posP);
+                }
             }
         }
         public HashSet<Piece> ListOutPieces(Color color)
@@ -186,14 +224,14 @@ namespace Xadrez.Xadrez
             PutNewPieces('g', 1, new Horse(Board, Color.White));
             PutNewPieces('h', 1, new Tower(Board, Color.White));
 
-            PutNewPieces('a', 2, new Pawn(Board, Color.White));
-            PutNewPieces('b', 2, new Pawn(Board, Color.White));
-            PutNewPieces('c', 2, new Pawn(Board, Color.White));
-            PutNewPieces('d', 2, new Pawn(Board, Color.White));
-            PutNewPieces('e', 2, new Pawn(Board, Color.White));
-            PutNewPieces('f', 2, new Pawn(Board, Color.White));
-            PutNewPieces('g', 2, new Pawn(Board, Color.White));
-            PutNewPieces('h', 2, new Pawn(Board, Color.White));
+            PutNewPieces('a', 2, new Pawn(Board, Color.White, this));
+            PutNewPieces('b', 2, new Pawn(Board, Color.White, this));
+            PutNewPieces('c', 2, new Pawn(Board, Color.White, this));
+            PutNewPieces('d', 2, new Pawn(Board, Color.White, this));
+            PutNewPieces('e', 2, new Pawn(Board, Color.White, this));
+            PutNewPieces('f', 2, new Pawn(Board, Color.White, this));
+            PutNewPieces('g', 2, new Pawn(Board, Color.White, this));
+            PutNewPieces('h', 2, new Pawn(Board, Color.White, this));
 
             PutNewPieces('a', 8, new Tower(Board, Color.Black));
             PutNewPieces('b', 8, new Horse(Board, Color.Black));
@@ -204,14 +242,14 @@ namespace Xadrez.Xadrez
             PutNewPieces('g', 8, new Horse(Board, Color.Black));
             PutNewPieces('h', 8, new Tower(Board, Color.Black));
 
-            PutNewPieces('a', 7, new Pawn(Board, Color.Black));
-            PutNewPieces('b', 7, new Pawn(Board, Color.Black));
-            PutNewPieces('c', 7, new Pawn(Board, Color.Black));
-            PutNewPieces('d', 7, new Pawn(Board, Color.Black));
-            PutNewPieces('e', 7, new Pawn(Board, Color.Black));
-            PutNewPieces('f', 7, new Pawn(Board, Color.Black));
-            PutNewPieces('g', 7, new Pawn(Board, Color.Black));
-            PutNewPieces('h', 7, new Pawn(Board, Color.Black));
+            PutNewPieces('a', 7, new Pawn(Board, Color.Black, this));
+            PutNewPieces('b', 7, new Pawn(Board, Color.Black, this));
+            PutNewPieces('c', 7, new Pawn(Board, Color.Black, this));
+            PutNewPieces('d', 7, new Pawn(Board, Color.Black, this));
+            PutNewPieces('e', 7, new Pawn(Board, Color.Black, this));
+            PutNewPieces('f', 7, new Pawn(Board, Color.Black, this));
+            PutNewPieces('g', 7, new Pawn(Board, Color.Black, this));
+            PutNewPieces('h', 7, new Pawn(Board, Color.Black, this));
 
         }
         public void RealizePlay(Position origin, Position destiny)
@@ -237,6 +275,17 @@ namespace Xadrez.Xadrez
             {
                 Turn++;
                 changePlayer();
+            }
+
+            //passant
+            Piece p = Board.ReturnPiece(destiny);
+            if(p is Pawn && (destiny.Line == origin.Line - 2 || destiny.Line == origin.Line + 2))
+            {
+                IsInPassant = p;
+            }
+            else
+            {
+                IsInPassant = null;
             }
         }
         public void ValidOriginPosition(Position pos)
